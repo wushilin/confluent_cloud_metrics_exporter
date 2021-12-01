@@ -189,6 +189,7 @@ public class ConfluentCloudMetricsSourceTask extends SourceTask {
                     log.error("Ignoring invalid line: " + buffer, ex);
                 }
             }
+            log.info("Polled " + source.size() + " records");
         } catch(Exception ex) {
             log.error("Error getting source records", ex);
         }
