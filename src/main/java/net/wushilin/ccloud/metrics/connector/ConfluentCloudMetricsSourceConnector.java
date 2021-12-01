@@ -21,6 +21,7 @@ import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigDef.Importance;
 import org.apache.kafka.common.config.ConfigDef.Type;
 import org.apache.kafka.common.config.ConfigException;
+import org.apache.kafka.common.config.types.Password;
 import org.apache.kafka.common.utils.AppInfoParser;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.source.SourceConnector;
@@ -56,7 +57,7 @@ public class ConfluentCloudMetricsSourceConnector extends SourceConnector {
 
     private String topic;
     private String apiKey;
-    private String apiSecret;
+    private Password apiSecret;
     private List<String> kafkaClusterIds;
     private int batchSize;
     private String proxy;
@@ -71,8 +72,6 @@ public class ConfluentCloudMetricsSourceConnector extends SourceConnector {
     public void start(Map<String, String> props) {
         log.info("Starting...");
         AbstractConfig parsedConfig = new AbstractConfig(CONFIG_DEF, props);
-        apiKey = parsedConfig.getString(API_KEY);
-        apiSecret = parsedConfig.getString(API_SECRET);
         kafkaClusterIds = new ArrayList<>();
         List<String> topics = parsedConfig.getList(TOPIC_CONFIG);
         if (topics.size() != 1) {
@@ -82,7 +81,7 @@ public class ConfluentCloudMetricsSourceConnector extends SourceConnector {
         kafkaClusterIds.addAll(topicsFromConfig);
         topic = topics.get(0);
         apiKey = parsedConfig.getString(API_KEY);
-        apiSecret = parsedConfig.getString(API_SECRET);
+        apiSecret = parsedConfig.getPassword(API_SECRET);
         proxy = parsedConfig.getString(PROXY);
         proxyPort = parsedConfig.getString(PROXY_PORT);
     }
@@ -110,7 +109,7 @@ public class ConfluentCloudMetricsSourceConnector extends SourceConnector {
         Map<String, String> config = new HashMap<>();
         config.put(TOPIC_CONFIG, topic);
         config.put(API_KEY, apiKey);
-        config.put(API_SECRET, apiSecret);
+        config.put(API_SECRET, apiSecret.value());
         config.put(KAFKA_CLUSTER_IDS, concat(kafkaClusterIds));
         config.put(PROXY, proxy);
         config.put(PROXY_PORT, proxyPort);
