@@ -191,7 +191,7 @@ public class ConfluentCloudMetricsSourceTask extends SourceTask {
             }
             log.info("Polled " + source.size() + " records");
         } catch(Exception ex) {
-            log.error("Error getting source records", ex);
+            log.error("Error getting source records. Is the cluster there? " + clusterIds, ex);
         }
         return source;
     }
